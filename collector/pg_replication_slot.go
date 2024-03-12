@@ -67,9 +67,9 @@ var (
 	pgReplicationSlotQuery = `SELECT
 		slot_name,
 		CASE WHEN pg_is_in_recovery() THEN 
-		    pg_last_wal_receive_lsn() - '0/0'
+			pg_last_xlog_receive_location() - '0/0'
 		ELSE 
-		    pg_current_wal_lsn() - '0/0' 
+			pg_current_xlog_location() - '0/0' 
 		END AS current_wal_lsn,
 		COALESCE(confirmed_flush_lsn, '0/0') - '0/0',
 		active

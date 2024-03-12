@@ -22,7 +22,9 @@ import (
 const walSubsystem = "wal"
 
 func init() {
-	registerCollector(walSubsystem, defaultEnabled, NewPGWALCollector)
+	// registerCollector(walSubsystem, defaultEnabled, NewPGWALCollector)
+	// disable because postgres 9.4 not provide
+	registerCollector(walSubsystem, defaultDisabled, NewPGWALCollector)
 }
 
 type PGWALCollector struct {
