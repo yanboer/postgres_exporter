@@ -104,6 +104,7 @@ var queryOverrides = map[string][]OverrideQuery{
 		},
 	},
 
+	// greenplum has many locally initiated connections, so we exclude connections which client_addr is null
 	"pg_stat_activity": {
 		// This query only works
 		{
@@ -134,7 +135,9 @@ var queryOverrides = map[string][]OverrideQuery{
 					application_name,
 					count(*) AS count,
 					MAX(EXTRACT(EPOCH FROM now() - xact_start))::float AS max_tx_duration
-				FROM pg_stat_activity GROUP BY datname,state,usename,application_name) AS tmp2
+				FROM pg_stat_activity 
+				WHERE client_addr is not null
+				GROUP BY datname,state,usename,application_name) AS tmp2
 				ON tmp.state = tmp2.state AND pg_database.datname = tmp2.datname
 			`,
 		},
