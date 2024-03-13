@@ -64,6 +64,7 @@ var (
 		[]string{"slot_name"}, nil,
 	)
 
+	// pg9.4 using restart_lsn replace confirmed_flush_lsn
 	pgReplicationSlotQuery = `SELECT
 		slot_name,
 		CASE WHEN pg_is_in_recovery() THEN 
@@ -71,7 +72,7 @@ var (
 		ELSE 
 			pg_current_xlog_location() - '0/0' 
 		END AS current_wal_lsn,
-		COALESCE(confirmed_flush_lsn, '0/0') - '0/0',
+		COALESCE(restart_lsn, '0/0') - '0/0',
 		active
 	FROM pg_replication_slots;`
 )
